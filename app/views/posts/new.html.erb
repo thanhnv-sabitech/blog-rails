@@ -1,0 +1,38 @@
+<div class="form-group">
+  <% content_for :title, "New post" %>
+
+  <h1>New post</h1>
+   <% if notice %>
+      <p class="alert alert-danger"><%= notice %></p>
+    <% end %>
+    <% if alert %>
+      <p class="alert alert-danger"><%= alert %></p>
+    <% end %>
+  <%= form_with model: @post, html: { multipart: true } do |form| %>
+    <div>
+      <%= form.label :title %><br>
+      <%= form.text_field :title, class: "form-control" %>
+    </div>
+    <% @post.errors.full_messages_for(:title).each do |message| %>
+      <small class="text-danger"><%= message %></small>
+    <% end %>
+    <div>
+      <%= form.label :content %><br>
+      <%= form.cktext_area :content, class: "form-control" %>
+    </div>
+    <% @post.errors.full_messages_for(:content).each do |message| %>
+      <small class="text-danger"><%= message %></small>
+    <% end %>
+  <br>
+
+  <div class="actions">
+      <%= form.submit "Submit", class: "btn btn-primary" %>
+    </div>
+  <% end %>
+  <br>
+
+  <div>
+    <%= link_to "Back to posts", posts_path %>
+  </div>
+
+</div>
