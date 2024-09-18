@@ -1,4 +1,6 @@
-<div class="form-group">
+<div class="container my-4">
+  <div class="row">
+    <div class="col-md-6 offset-md-3">
   <% content_for :title, "New post" %>
 
   <h1>New post</h1>
@@ -23,7 +25,26 @@
     <% @post.errors.full_messages_for(:content).each do |message| %>
       <small class="text-danger"><%= message %></small>
     <% end %>
-  <br>
+    <br>
+      <div >
+      <%= form.label :status, "Status" %>
+      <%= form.collection_radio_buttons :status, Post.statuses.keys, :to_s, :humanize, class: "form-check-input" do |b| %>
+        <div class="form-check">
+          <%= b.radio_button(class: "form-check-input") %>
+          <%= b.label(class: "form-check-label") %>
+        </div>
+      <% end %>
+    </div>
+    <br>
+    <div class="field">
+      <%= form.label :image %>
+      <%= form.file_field :image, id: "imageInput" %>
+    </div>
+
+    <div class="field">
+      <img id="imagePreview" src="#" alt="Image Preview" style="max-width: 300px; display: none;" />
+    </div>
+
 
   <div class="actions">
       <%= form.submit "Submit", class: "btn btn-primary" %>
@@ -34,5 +55,6 @@
   <div>
     <%= link_to "Back to posts", posts_path %>
   </div>
-
+  </div>
+</div>
 </div>

@@ -1,3 +1,6 @@
+a {
+    text-decoration: none !important;
+}
 .login-form {
 max-width: 400px;
 margin: 0 auto;
@@ -20,7 +23,12 @@ padding-top: 25vh;
 .actions {
     margin-top: 15px;
 }
-.form-group {
-    margin: 50px;
-    width: 40%;
+
+p img {
+    max-width: 100%;
+    height: auto;
+}
+
+.post-detail {
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
 }

@@ -1,10 +1,12 @@
 class PostsController < ApplicationController
   before_action :set_post, only: %i[ show edit update destroy ]
   before_action :authenticate_user!
+  before_action :authorize_post, only: [ :edit, :update, :destroy ]
+
 
   # GET /posts or /posts.json
   def index
-    @posts = Post.all
+    @posts = Post.published.or(Post.where(user: current_user))
   end
 
   # GET /posts/1 or /posts/1.json
@@ -60,11 +62,20 @@ class PostsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_post
-      @post = Post.find(params[:id])
+      @post = Post.find_by(id: params[:id])
+      if @post.nil?
+        flash[:alert] ="Post not found."
+        redirect_to posts_path
+      end
     end
 
     # Only allow a list of trusted parameters through.
     def post_params
-      params.require(:post).permit(:title, :content, :image)
+      params.require(:post).permit(:title, :content, :image, :status)
+    end
+
+    def authorize_post
+      # Sử dụng Pundit để kiểm tra quyền
+      authorize @post
     end
 end

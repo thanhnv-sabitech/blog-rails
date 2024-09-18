@@ -1,0 +1,52 @@
+<!-- Navbar -->
+<% if current_user.present? %>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+      <div class="container-fluid">
+        <%= link_to "SABITECH blog", posts_path, class: "navbar-brand" %>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div
+          class="collapse navbar-collapse justify-content-end"
+          id="navbarNav"
+        >
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link active" href="#"
+                >Welcome, <strong><%= current_user.name %></strong></a
+              >
+            </li>
+            <li class="nav-item">
+              <%= button_to 'Logout', destroy_user_session_path, method:
+              :delete, class: 'btn btn-outline-danger ms-3' %>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <% if flash[:notice] %>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <%= flash[:notice] %>
+        </div>
+    <% end %>
+
+    <% if flash[:alert] %>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <%= flash[:alert] %>
+        </div>
+    <% end %>
+
+    <% if flash[:error] %>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <%= flash[:error] %>
+        </div>
+    <% end %>
+<% end %>
