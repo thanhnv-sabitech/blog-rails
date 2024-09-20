@@ -9,15 +9,15 @@ class Post < ApplicationRecord
     # Scope func
     scope :published_or_owned_by, ->(user) { includes(:user, :image_attachment).published.or(where(user: user)) }
 
-    # Validates func
-    validates :title, presence: true
-    validates :content, presence: true, length: { minimum: 10 }
-
-    # instance methods
+    # class methods
     def self.ransackable_attributes(auth_object = nil)
         [ "content", "title" ]
     end
     def self.ransackable_associations(auth_object = nil)
         [ "image_attachment", "image_blob", "user" ]
     end
+
+    # Validates func
+    validates :title, presence: true
+    validates :content, presence: true, length: { minimum: 10 }
 end

@@ -37,3 +37,9 @@ p img {
     justify-content: center;
     margin-top: 20px;
 }
+.no-data-for-search {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    height: 83vh;
+}
