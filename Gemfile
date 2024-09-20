@@ -27,6 +27,11 @@ gem "ckeditor"
 gem "sassc"
 gem "image_processing", "~> 1.2"
 gem "pundit"
+gem "draper"
+gem "ransack"
+gem "pagy"
+gem "dotenv-rails", groups: [ :development, :test ]
+
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
 
@@ -56,6 +61,8 @@ end
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
+  gem "bullet"
+  gem "pry"
 end
 
 group :test do

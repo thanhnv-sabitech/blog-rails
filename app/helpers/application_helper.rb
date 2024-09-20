@@ -1,4 +1,5 @@
 module ApplicationHelper
+  include Pagy::Frontend
   def flash_messages
     flash.each_with_object([]) do |(key, message), messages|
       if message.present?

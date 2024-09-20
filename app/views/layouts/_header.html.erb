@@ -1,36 +1,47 @@
 <!-- Navbar -->
-<% if user_signed_in? %>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
-    <div class="container-fluid">
-      <%= link_to "SABITECH blog", posts_path, class: "navbar-brand" %>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarNav"
-        aria-controls="navbarNav"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div
-        class="collapse navbar-collapse justify-content-end"
-        id="navbarNav"
-      >
-        <ul class="navbar-nav">
+<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+  <div class="container-fluid">
+    <%= link_to "SABITECH blog", posts_path, class: "navbar-brand" %>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <!-- Input Search -->
+    <% if action_name == 'index' %>
+      <%= search_form_for @q do |f| %>
+        <%= f.search_field :title_or_content_cont , class: "form-control", placeholder: "Type for search" %>
+      <% end %>
+    <% end %>
+    <%= link_to "New post", new_post_path, class: 'btn btn-outline-primary ms-3' %>
+    <div
+      class="collapse navbar-collapse justify-content-end"
+      id="navbarNav"
+    >
+      <ul class="navbar-nav">
+        <% if user_signed_in? %>
           <li class="nav-item">
-            <a class="nav-link active" href="#"
-              >Welcome, <strong><%= current_user.name %></strong></a
-            >
+            <a class="nav-link active" href="#">
+              Welcome, <strong><%= current_user.name %></strong>
+            </a>
           </li>
           <li class="nav-item">
-            <%= button_to 'Logout', destroy_user_session_path, method:
-            :delete, class: 'btn btn-outline-danger ms-3' %>
+            <%= button_to 'Logout', destroy_user_session_path, method: :delete, class: 'btn btn-outline-danger ms-3' %>
           </li>
-        </ul>
-      </div>
+        <% else %>
+          <li class="nav-item">
+            <%= button_to 'Login', new_user_session_url, method: :get, class: 'btn btn-outline-danger ms-3' %>
+          </li>
+        <% end %>
+      </ul>
+   
     </div>
-  </nav>
-  <%= flash_messages %>
-<% end %>
+  </div>
+</nav>
+<%= flash_messages %>

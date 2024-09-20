@@ -32,3 +32,8 @@ p img {
 .post-detail {
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
 }
+.paging {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}

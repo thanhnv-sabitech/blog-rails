@@ -2,11 +2,12 @@ class PostsController < ApplicationController
   before_action :set_post, only: %i[ show edit update destroy ]
   before_action :authenticate_user!, only: %i[ new edit update destroy ]
   before_action :authorize_post, only: %i[ edit update destroy ]
-
+  layout "post"
 
   # GET /posts or /posts.json
   def index
-    @posts = Post.published_or_owned_by(current_user)
+    @q = Post.published_or_owned_by(current_user).ransack(params[:q])
+    @pagy, @posts = pagy(@q.result, limit: ApplicationRecord::DEFAULT_PAGING)
   end
 
   # GET /posts/1 or /posts/1.json
