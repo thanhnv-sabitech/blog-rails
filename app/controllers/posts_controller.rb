@@ -1,12 +1,12 @@
 class PostsController < ApplicationController
   before_action :set_post, only: %i[ show edit update destroy ]
-  before_action :authenticate_user!
-  before_action :authorize_post, only: [ :edit, :update, :destroy ]
+  before_action :authenticate_user!, only: %i[ new edit update destroy ]
+  before_action :authorize_post, only: %i[ edit update destroy ]
 
 
   # GET /posts or /posts.json
   def index
-    @posts = Post.published.or(Post.where(user: current_user))
+    @posts = Post.published_or_owned_by(current_user)
   end
 
   # GET /posts/1 or /posts/1.json
@@ -75,7 +75,6 @@ class PostsController < ApplicationController
     end
 
     def authorize_post
-      # Sử dụng Pundit để kiểm tra quyền
       authorize @post
     end
 end

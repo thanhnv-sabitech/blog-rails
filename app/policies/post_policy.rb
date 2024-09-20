@@ -21,6 +21,6 @@ class PostPolicy
   private
 
   def user_owns_post?
-    user == post.user
+    user.present? && user.id == post.user_id
   end
 end
