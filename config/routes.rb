@@ -6,11 +6,7 @@ Rails.application.routes.draw do
     sign_up: "register"
   }
   root "posts#index"
-  resources :posts do
-    collection do
-      get :load_more
-    end
-  end  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+  resources :posts
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check
