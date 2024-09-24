@@ -1,10 +1,109 @@
-<p style="color: green"><%= notice %></p>
-  <%= @post.title %>
-  <%= raw @post.content %>
+<div class="container my-4">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <p class="card-text">
+        <small class="text-body-secondary"
+          >Creator By: <%= @post.user.email%> 
+          <br>
+          Create At:
+          <%=@post.created_at.strftime("%Y-%m-%d %H:%M") %></small>
+      </p>
+      
+        <div class="d-flex align-items-center justify-content-end mb-2">
+          <% if policy(@post).edit? %>
+            <%= link_to "Edit this post", edit_post_path(@post), class: "btn btn-primary me-2 btn-sm" %>
+          <% end %>
+          <%= link_to "Back to posts", posts_path, class: "btn btn-secondary me-2 btn-sm" %> 
+          <% if policy(@post).destroy? %>
+            <%= button_to "Destroy this post", @post, method: :delete, class: "btn btn-danger btn-sm" %>
+          <% end %>
+        </div>
+      <div class="card mb-3">
+        <h1 class="card-header"><%= @post.title %></h1>
+        <div class="card-body">
+          <div class="card-text"><%= raw @post.content %></div>
+        </div>
+      </div>
 
-<div>
-  <%= link_to "Edit this post", edit_post_path(@post) %> |
-  <%= link_to "Back to posts", posts_path %>
+      <div class="container mt-5">
+        <!-- Form nhập bình luận -->
+       <% if user_signed_in? %>
+          <%= form_with model: [ @post, @post.comments.build ] do |form| %>
+            <div class="card mb-4">
+              <div class="card-body">
+                <h5 class="card-title">Leave a Comment</h5>
+                  <div class="mb-3">
+                    <%= form.text_area :content, class: "form-control" %>
+                  </div>
+                    <%= form.submit "Submit", class: "btn btn-primary" %>
+              </div>
+          </div>
+          <% end %>
+        <% end %>
+        <!-- Danh sách các bình luận đã có -->
+        <div class="comments">
+          <!-- Một bình luận -->
+          <% @comments.each do |comment| %>
+            <%= next if comment.id.nil? %>
+            <div class="card mb-3">
+              <div class="card-body">
+                <div class="d-flex justify-content-between">
+                  <h6 class="card-title mb-0"><strong><%= comment.user.name %></strong></h6>
+                  <small class="text-muted"><%= comment.decorate.created_at_formatted %></small>
+                </div>
+                <p class="card-text mt-2"><%= comment.content %></p>
+                <div class="d-flex justify-content-between">
+                  <!-- Nút like và reply -->
+                  <div>
+                    <button class="btn btn-sm btn-outline-primary me-2">Like</button>
+                    <button class="btn btn-sm btn-outline-secondary reply-btn" data-bs-toggle="collapse" href="#collapseExample-<%= comment.id %>" role="button" aria-expanded="false" aria-controls="collapseExample">Reply</button>
+                  </div>
+                  <small class="text-muted">5 Likes</small>
+                </div>
+              </div>
 
-  <%= button_to "Destroy this post", @post, method: :delete %>
+              <!-- Bình luận cấp 2 (Reply) -->
+              <% if comment.subordinates.any? %>
+                <% comment.subordinates.each do |subordinate| %>
+                  <div class="replies ms-4 mt-2">
+                    <div class="card mb-3">
+                      <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                          <h6 class="card-title mb-0"><strong><%= subordinate.user.name %></strong></h6>
+                          <small class="text-muted"><%= subordinate.decorate.created_at_formatted %></small>
+                        </div>
+                        <p class="card-text mt-2"><%= subordinate.content %></p>
+                        <div class="d-flex justify-content-between">
+                          <div>
+                            <button class="btn btn-sm btn-outline-primary me-2">Like</button>
+                          </div>
+                          <small class="text-muted">2 Likes</small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                <% end %>
+              <% end %>
+              <% if user_signed_in? %>
+              <!-- Form reply ẩn, sẽ hiện ra khi bấm "Reply" -->
+              <div class="reply-form ms-4 collapse mb-3" id="collapseExample-<%= comment.id %>">
+                <%= form_with model: [ @post, comment ], url: reply_post_comment_path(@post, comment), method: :post do |form| %>
+                  <div class="form-group">
+                    <%= form.label :content, "Reply:" %>
+                    <%= form.text_area :content, class: "form-control", value: nil %>
+                  </div>
+                  <%= form.submit "Reply", class: "btn btn-secondary mt-1" %>
+                <% end %>
+            </div>
+             <% end %>
+          <% end %>
+          </div>
+          <div class="paging">
+            <%= pagy_bootstrap_nav(@pagy).html_safe if @pagy.pages > 1 %>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
 </div>

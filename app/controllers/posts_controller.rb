@@ -1,14 +1,19 @@
 class PostsController < ApplicationController
-  before_action :set_post, only: %i[ show edit update destroy ]
-  before_action :authenticate_user!
+  before_action :set_post, only: %i[ edit update destroy ]
+  before_action :authenticate_user!, only: %i[ new edit update destroy ]
+  before_action :authorize_post, only: %i[ edit update destroy ]
+  layout "post"
 
   # GET /posts or /posts.json
   def index
-    @posts = Post.all
+    @q = Post.published_or_owned_by(current_user).ransack(params[:q])
+    @pagy, @posts = pagy(@q.result, limit: ApplicationRecord::DEFAULT_PAGING)
   end
 
   # GET /posts/1 or /posts/1.json
   def show
+    @post = Post.includes(:user).find_by(id: params[:id])
+    @pagy, @comments = pagy(@post.comments.includes(:user, :subordinates).order(:id), limit: ApplicationRecord::DEFAULT_PAGING)
   end
 
   # GET /posts/new
@@ -20,20 +25,20 @@ class PostsController < ApplicationController
   def edit
   end
 
-    # POST /posts or /posts.json
-    def create
-      @post = current_user.posts.build(post_params)
+  # POST /posts or /posts.json
+  def create
+    @post = current_user.posts.build(post_params)
 
-      respond_to do |format|
-        if @post.save
-          format.html { redirect_to post_url(@post), notice: "Post was successfully created." }
-          format.json { render :show, status: :created, location: @post }
-        else
-          format.html { render :new, status: :unprocessable_entity }
-          format.json { render json: @post.errors, status: :unprocessable_entity }
-        end
+    respond_to do |format|
+      if @post.save
+        format.html { redirect_to post_url(@post), notice: "Post was successfully created." }
+        format.json { render :show, status: :created, location: @post }
+      else
+        format.html { render :new, status: :unprocessable_entity }
+        format.json { render json: @post.errors, status: :unprocessable_entity }
       end
     end
+  end
 
   # PATCH/PUT /posts/1 or /posts/1.json
   def update
@@ -60,11 +65,19 @@ class PostsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_post
-      @post = Post.find(params[:id])
+      @post = Post.find_by(id: params[:id])
+      if @post.nil?
+        flash[:alert] ="Post not found."
+        redirect_to posts_path
+      end
     end
 
     # Only allow a list of trusted parameters through.
     def post_params
-      params.require(:post).permit(:title, :content, :image)
+      params.require(:post).permit(:title, :content, :image, :status)
+    end
+
+    def authorize_post
+      authorize @post
     end
 end
